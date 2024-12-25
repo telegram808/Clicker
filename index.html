@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEO Clicker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(120deg, #004e64, #00a896);
+            color: #ffffff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .token-display {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .click-btn {
+            width: 150px;
+            height: 150px;
+            background-image: url('https://i.postimg.cc/26ksYvQT/1000002199.png');
+            background-size: cover;
+            background-position: center;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .click-btn:active {
+            transform: scale(0.95);
+        }
+
+        .info-section {
+            margin-top: 30px;
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+
+        .info-section span {
+            font-weight: bold;
+            color: #00d4a1;
+        }
+
+        .progress-bar {
+            margin-top: 20px;
+            width: 100%;
+            background: #333;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #00d4a1, #00ffcc);
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: width 0.3s;
+        }
+
+        .upgrade-btn {
+            background: #00a896;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 1em;
+            border-radius: 10px;
+            margin-top: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s ease, background 0.3s;
+        }
+
+        .upgrade-btn:hover {
+            background: #00d4a1;
+            transform: scale(1.05);
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #aaaaaa;
+        }
+
+        footer a {
+            color: #00d4a1;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BEO Clicker</h1>
+        <div class="token-display" id="token-display">0 BEO</div>
+        <button class="click-btn" onclick="earnTokens()"></button>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="info-section">
+            You have helped <span id="trees-planted">0</span> trees 🌳.  
+            Each click makes the world better!
+        </div>
+
+        <button class="upgrade-btn" onclick="buyUpgrade()">Buy Upgrade for 50 BEO</button>
+    </div>
+
+    <footer>
+        © 2024 Project <a href="#">BEO</a>. Together for a better planet.
+    </footer>
+
+    <script>
+        let tokens = 0;
+        let tokensPerClick = 1;
+        let treesPlanted = 0;
+
+        // Load saved progress
+        window.onload = function() {
+            const savedTokens = localStorage.getItem('tokens');
+            const savedTokensPerClick = localStorage.getItem('tokensPerClick');
+            const savedTreesPlanted = localStorage.getItem('treesPlanted');
+
+            if (savedTokens) tokens = parseInt(savedTokens);
+            if (savedTokensPerClick) tokensPerClick = parseInt(savedTokensPerClick);
+            if (savedTreesPlanted) treesPlanted = parseInt(savedTreesPlanted);
+
+            updateDisplay();
+            updateProgress();
+        };
+
+        function earnTokens() {
+            tokens += tokensPerClick;
+            treesPlanted = Math.floor(tokens / 10);
+            saveProgress();
+            updateDisplay();
+            updateProgress();
+        }
+
+        function buyUpgrade() {
+            if (tokens >= 50) {
+                tokens -= 50;
+                tokensPerClick += 1;
+                alert("Upgrade purchased! You now earn more tokens per click.");
+                saveProgress();
+                updateDisplay();
+            } else {
+                alert("Not enough tokens to purchase the upgrade.");
+            }
+        }
+
+        function updateDisplay() {
+            document.getElementById('token-display').textContent = `${tokens} BEO`;
+            document.getElementById('trees-planted').textContent = treesPlanted;
+        }
+
+        function updateProgress() {
+            const progress = Math.min((tokens % 10) * 10, 100);
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('tokens', tokens);
+            localStorage.setItem('tokensPerClick', tokensPerClick);
+            localStorage.setItem('treesPlanted', treesPlanted);
+        }
+    </script>
+</body>
+</html>
